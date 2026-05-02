@@ -84,7 +84,10 @@
 
 <div class="header">
     <h2>Admin Dashboard</h2>
-    <a href="/admin/logout">Logout</a>
+    <div class="flex space-x-4">
+        <a href="/admin/guides" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Manage Guides</a>
+        <a href="/admin/logout">Logout</a>
+    </div>
 </div>
 
 <div class="main">

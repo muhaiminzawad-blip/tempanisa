@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cox's Bazar Map</title>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        h2 {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Cox's Bazar Campus Commute Map</h2>
+
+    <div class="map-container">
+        <iframe
+            src="https://www.google.com/maps?q=21.4272,92.0058&z=13&output=embed"
+            allowfullscreen
+            loading="lazy">
+        </iframe>
+    </div>
+
+</body>
+</html>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\RoomRequest;
 use App\Models\Room;
+use App\Models\Guide;
 
 class AdminController extends Controller
 {
@@ -53,5 +54,31 @@ class AdminController extends Controller
     {
         RoomRequest::findOrFail($id)->update(['status' => 'rejected']);
         return redirect('/admin/dashboard')->with('error', 'Room rejected.');
+    }
+
+    public function guides()
+    {
+        $guides = Guide::latest()->get();
+        return view('admin.guides', compact('guides'));
+    }
+
+    public function showGuide($id)
+    {
+        $guide = Guide::findOrFail($id);
+        return view('admin.show-guide', compact('guide'));
+    }
+
+    public function approveGuide($id)
+    {
+        $guide = Guide::findOrFail($id);
+        $guide->update(['status' => 'approved']);
+        return redirect('/admin/guides')->with('success', 'Guide approved successfully.');
+    }
+
+    public function rejectGuide($id)
+    {
+        $guide = Guide::findOrFail($id);
+        $guide->update(['status' => 'rejected']);
+        return redirect('/admin/guides')->with('error', 'Guide rejected.');
     }
 }
