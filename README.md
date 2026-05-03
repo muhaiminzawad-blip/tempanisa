@@ -7,6 +7,54 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Travel Navigator Explorer
+
+A Laravel-based travel application for exploring destinations, booking hotels, and connecting with guides.
+
+## Setup Instructions
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/muhaiminzawad-blip/tempanisa.git
+   cd tempanisa
+   ```
+
+2. Install PHP dependencies:
+   ```bash
+   composer install
+   ```
+
+3. Install Node.js dependencies:
+   ```bash
+   npm install
+   npm run build
+   ```
+
+4. Create the database:
+   - Create a MySQL database named `db_temp`
+   - Ensure your MySQL server is running (default: localhost:3306, user: root, no password)
+
+5. Run migrations and seeders:
+   ```bash
+   php artisan migrate --seed
+   ```
+
+6. Serve the application:
+   ```bash
+   php artisan serve
+   ```
+
+The application will be available at `http://localhost:8000`.
+
+## Features
+
+- Destination exploration
+- Hotel and room booking
+- Guide connections
+- Admin panel
+- Messaging system
+- Travel budget calculator
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
