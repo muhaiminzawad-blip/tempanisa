@@ -22,6 +22,7 @@
                 <a href="{{ route('home') }}">Home</a>
                 <a href="{{ route('destinations.index') }}">Destinations</a>
                 <a href="{{ route('guides.index') }}">Guides</a>
+                <a href="{{ route('explore.index') }}">Explore</a>
                 <a href="{{ route('blogs.index') }}">Blogs</a>
                 <a href="#contact">Contact</a>
 				
@@ -30,16 +31,10 @@
 
 
 
-            <!-- ✅ Explore + Guide Login -->
-            <div class="hidden md:flex items-center space-x-3">
-                <a href="{{ route('guide.login') }}" class="px-5 py-2 text-slate-900 bg-white rounded-full shadow-lg hover:bg-slate-100 transition transform hover:-translate-y-1 hover:scale-105">
-                    Guide Login
-                </a>
-                <a href="{{ route('login') }}" class="px-5 py-2 text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1 hover:scale-105">
+            <!-- ✅ Only Get Started Button remains -->
+            <div class="hidden md:flex space-x-4">
+                <a href="{{ route('login') }}" class="px-5 py-2 text-white bg-blue-600 rounded-full">
                     Get Started
-                </a>
-                <a href="{{ route('guides.apply') }}" class="px-5 py-2 text-blue-600 bg-white rounded-full shadow-lg hover:bg-gray-50 transition transform hover:-translate-y-1 hover:scale-105">
-                    Become a Guide
                 </a>
             </div>
 
@@ -126,51 +121,52 @@
             </div>
 
             <div class="space-y-6">
-                <section class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-                    <h3 class="text-xl font-semibold mb-4">Hire this guide</h3>
+                @auth
+                <section class="bg-gradient-to-br from-white/60 via-blue-50/40 to-cyan-50/40 backdrop-blur-3xl rounded-3xl shadow-xl border border-white/70 p-6 transition-all duration-300 hover:shadow-2xl">
+                    <h3 class="text-xl font-semibold mb-4 text-slate-900">Hire this guide</h3>
                     <form action="{{ route('guides.hire', $guide->id) }}" method="post" class="space-y-4">
                         @csrf
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Your name</label>
-                            <input type="text" name="guest_name" value="{{ old('guest_name') }}" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3" required>
+                            <input type="text" name="guest_name" value="{{ old('guest_name') }}" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 bg-white/80" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Email</label>
-                            <input type="email" name="guest_email" value="{{ old('guest_email') }}" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3" required>
+                            <input type="email" name="guest_email" value="{{ old('guest_email') }}" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 bg-white/80" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Preferred date</label>
-                            <input type="date" name="date" value="{{ old('date') }}" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3">
+                            <input type="date" name="date" value="{{ old('date') }}" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 bg-white/80">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Notes</label>
-                            <textarea name="notes" rows="4" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3">{{ old('notes') }}</textarea>
+                            <textarea name="notes" rows="4" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 bg-white/80">{{ old('notes') }}</textarea>
                         </div>
                         <button type="submit" class="w-full inline-flex justify-center px-5 py-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition">Hire Guide</button>
                     </form>
                 </section>
 
-                <section class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-                    <h3 class="text-xl font-semibold mb-3">Start a chat</h3>
+                <section class="bg-gradient-to-br from-white/60 via-blue-50/40 to-cyan-50/40 backdrop-blur-3xl rounded-3xl shadow-xl border border-white/70 p-6 transition-all duration-300 hover:shadow-2xl">
+                    <h3 class="text-xl font-semibold mb-3 text-slate-900">Start a chat</h3>
                     <p class="text-slate-600 mb-4">Chat with the guide and ask questions before you travel.</p>
                     <a href="{{ route('guides.chat', $guide->id) }}" class="inline-flex px-5 py-3 rounded-full bg-slate-800 text-white hover:bg-slate-900 transition">Open Chat</a>
                 </section>
 
-                <section class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-                    <h3 class="text-xl font-semibold mb-4">Leave a review</h3>
+                <section class="bg-gradient-to-br from-white/60 via-blue-50/40 to-cyan-50/40 backdrop-blur-3xl rounded-3xl shadow-xl border border-white/70 p-6 transition-all duration-300 hover:shadow-2xl">
+                    <h3 class="text-xl font-semibold mb-4 text-slate-900">Leave a review</h3>
                     <form action="{{ route('guides.reviews.store', $guide->id) }}" method="post" class="space-y-4">
                         @csrf
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Name</label>
-                            <input type="text" name="guest_name" value="{{ old('guest_name') }}" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3" required>
+                            <input type="text" name="guest_name" value="{{ old('guest_name') }}" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 bg-white/80" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Email</label>
-                            <input type="email" name="guest_email" value="{{ old('guest_email') }}" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3" required>
+                            <input type="email" name="guest_email" value="{{ old('guest_email') }}" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 bg-white/80" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Rating</label>
-                            <select name="rating" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3">
+                            <select name="rating" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 bg-white/80">
                                 @for($i = 5; $i >= 1; $i--)
                                     <option value="{{ $i }}" {{ old('rating') == $i ? 'selected' : '' }}>{{ $i }} star{{ $i > 1 ? 's' : '' }}</option>
                                 @endfor
@@ -178,11 +174,18 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Comment</label>
-                            <textarea name="comment" rows="4" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3">{{ old('comment') }}</textarea>
+                            <textarea name="comment" rows="4" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 bg-white/80">{{ old('comment') }}</textarea>
                         </div>
                         <button type="submit" class="w-full inline-flex justify-center px-5 py-3 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition">Submit Review</button>
                     </form>
                 </section>
+                @else
+                <section class="bg-gradient-to-br from-white/60 via-blue-50/40 to-cyan-50/40 backdrop-blur-3xl rounded-3xl shadow-xl border border-white/70 p-6 text-center transition-all duration-300 hover:shadow-2xl">
+                    <h3 class="text-xl font-semibold mb-4 text-slate-900">Login Required</h3>
+                    <p class="text-slate-600 mb-4">You need to be logged in to hire guides, chat, or leave reviews.</p>
+                    <a href="{{ route('login') }}" class="inline-flex px-5 py-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition">Login</a>
+                </section>
+                @endauth
             </div>
         </div>
     </div>

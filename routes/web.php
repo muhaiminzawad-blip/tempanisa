@@ -38,6 +38,13 @@ Route::get('/destinations/{id}', [DestinationController::class, 'show'])->name('
 
 /*
 |--------------------------------------------------------------------------
+| Explore
+|--------------------------------------------------------------------------
+*/
+Route::get('/explore', [ExploreController::class, 'index'])->name('explore.index');
+
+/*
+|--------------------------------------------------------------------------
 | Guides
 |--------------------------------------------------------------------------
 */
@@ -45,12 +52,13 @@ Route::get('/guides', [GuideController::class, 'index'])->name('guides.index');
 Route::get('/guides/apply', [GuideController::class, 'create'])->name('guides.apply');
 Route::post('/guides', [GuideController::class, 'store'])->name('guides.store');
 Route::get('/guides/{id}', [GuideController::class, 'show'])->name('guides.show');
-Route::post('/guides/{id}/hire', [BookingController::class, 'store'])->name('guides.hire');
-Route::post('/guides/{id}/reviews', [ReviewController::class, 'store'])->name('guides.reviews.store');
-Route::get('/explore', [ExploreController::class, 'index'])->name('explore.index');
-Route::get('/guides/{id}/chat', [MessageController::class, 'show'])->name('guides.chat');
-Route::get('/guides/{id}/messages', [MessageController::class, 'index']);
-Route::post('/guides/{id}/messages', [MessageController::class, 'store']);
+Route::middleware('auth')->group(function () {
+    Route::post('/guides/{id}/hire', [BookingController::class, 'store'])->name('guides.hire');
+    Route::post('/guides/{id}/reviews', [ReviewController::class, 'store'])->name('guides.reviews.store');
+    Route::get('/guides/{id}/chat', [MessageController::class, 'show'])->name('guides.chat');
+    Route::get('/guides/{id}/messages', [MessageController::class, 'index']);
+    Route::post('/guides/{id}/messages', [MessageController::class, 'store']);
+});
 
 
 /*

@@ -23,6 +23,7 @@
                 <a href="{{ route('home') }}">Home</a>
                 <a href="{{ route('destinations.index') }}">Destinations</a>
                 <a href="{{ route('guides.index') }}">Guides</a>
+                <a href="{{ route('explore.index') }}">Explore</a>
                 <a href="{{ route('blogs.index') }}">Blogs</a>
                 <a href="#contact">Contact</a>
 				
@@ -31,16 +32,10 @@
 
 
 
-            <!-- ✅ Get Started + Guide Login -->
+            <!-- ✅ Get Started -->
             <div class="hidden md:flex items-center space-x-3">
-                <a href="{{ route('guide.login') }}" class="px-5 py-2 text-slate-900 bg-white rounded-full shadow-lg hover:bg-slate-100 transition transform hover:-translate-y-1 hover:scale-105">
-                    Guide Login
-                </a>
                 <a href="{{ route('login') }}" class="px-5 py-2 text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1 hover:scale-105">
                     Get Started
-                </a>
-                <a href="{{ route('guides.apply') }}" class="px-5 py-2 text-blue-600 bg-white rounded-full shadow-lg hover:bg-gray-50 transition transform hover:-translate-y-1 hover:scale-105">
-                    Become a Guide
                 </a>
             </div>
 

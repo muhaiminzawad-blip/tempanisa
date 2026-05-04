@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
     <style>
         .map-card { min-height: 520px; }
         .place-card { transition: transform .2s ease, box-shadow .2s ease; }
@@ -68,6 +70,7 @@
                         <button data-query="park" class="explore-chip rounded-3xl bg-white/80 border border-slate-200 px-4 py-3 text-slate-800 font-semibold hover:bg-cyan-50 transition">Park</button>
                         <button data-query="beach" class="explore-chip rounded-3xl bg-white/80 border border-slate-200 px-4 py-3 text-slate-800 font-semibold hover:bg-cyan-50 transition">Beach</button>
                         <button data-query="hill" class="explore-chip rounded-3xl bg-white/80 border border-slate-200 px-4 py-3 text-slate-800 font-semibold hover:bg-cyan-50 transition">Hill</button>
+                        <button data-query="destination" class="explore-chip rounded-3xl bg-white/80 border border-slate-200 px-4 py-3 text-slate-800 font-semibold hover:bg-cyan-50 transition">Destinations</button>
                     </div>
 
                     <div class="rounded-3xl bg-slate-900/10 border border-white/60 p-4 text-sm text-slate-600">
@@ -93,6 +96,9 @@
     <script>
         // Cox's Bazar coordinates
         const coxsBazarCenter = [21.4272, 92.0058];
+
+        // Destinations from database
+        const destinations = @json($destinations);
 
         // Predefined popular places in Cox's Bazar
         const places = [
@@ -154,7 +160,46 @@
             }
         ];
 
-        let map, markers = [];
+        // Map destination categories to place types
+        const categoryTypeMap = {
+            'beach': 'beach',
+            'hill': 'hill',
+            'park': 'park',
+            'restaurant': 'restaurants',
+            'hotels': 'restaurant'
+        };
+
+        // Add destinations to places with proper category mapping
+        destinations.forEach(dest => {
+            // Map destination categories to our filter types
+            let type = 'destination';
+            const category = dest.category ? dest.category.toLowerCase() : '';
+            
+            if (category.includes('beach') || category.includes('island')) {
+                type = 'beach';
+            } else if (category.includes('hill') || category.includes('mountain') || category.includes('nature')) {
+                type = 'hill';
+            } else if (category.includes('waterfall')) {
+                type = 'park';
+            } else if (category.includes('cultural') || category.includes('monastery') || category.includes('temple')) {
+                type = 'destination';
+            } else if (category.includes('eco') || category.includes('adventure') || category.includes('wildlife')) {
+                type = 'destination';
+            }
+            
+            // Use Cox's Bazar center as placeholder since DB doesn't have coords
+            const coords = [21.4272 + (Math.random() - 0.5) * 0.1, 92.0058 + (Math.random() - 0.5) * 0.1];
+            
+            places.push({
+                name: dest.name,
+                coords: coords,
+                description: dest.description || dest.category || 'Destination',
+                type: type,
+                rating: dest.rating || 4.0
+            });
+        });
+
+        let map, markers = [], userLocation = null, routingControl = null;
 
         function initMap() {
             // Initialize map centered on Cox's Bazar
@@ -169,7 +214,7 @@
             // Try to get user location and center map there
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
-                    const userLocation = [position.coords.latitude, position.coords.longitude];
+                    userLocation = [position.coords.latitude, position.coords.longitude];
                     map.setView(userLocation, 14);
                     // Add a marker for user's location
                     L.marker(userLocation)
@@ -204,7 +249,34 @@
             clearMarkers();
             setActiveChip(type);
 
-            const filteredPlaces = places.filter(place => place.type === type);
+            let filteredPlaces = [];
+            
+            // Special handling for predefined categories vs database destinations
+            if (type === 'restaurants') {
+                filteredPlaces = places.filter(place => place.type === 'restaurants' || place.type === 'restaurant');
+            } else if (type === 'beach') {
+                filteredPlaces = places.filter(place => place.type.toLowerCase().includes('beach'));
+            } else if (type === 'hill') {
+                filteredPlaces = places.filter(place => 
+                    place.type.toLowerCase().includes('hill') || 
+                    place.type.toLowerCase().includes('mountain') || 
+                    place.type.toLowerCase().includes('nature')
+                );
+            } else if (type === 'park') {
+                filteredPlaces = places.filter(place => place.type.toLowerCase().includes('park'));
+            } else if (type === 'destination') {
+                // Show all that are destinations or have meaningful locations
+                filteredPlaces = places.filter(place => 
+                    place.type === 'destination' || 
+                    place.type.toLowerCase().includes('waterfall') ||
+                    place.type.toLowerCase().includes('cultural') ||
+                    place.type.toLowerCase().includes('eco') ||
+                    place.type.toLowerCase().includes('island')
+                );
+            } else {
+                filteredPlaces = places.filter(place => place.type === type);
+            }
+            
             const list = document.getElementById('placesList');
             list.innerHTML = '';
 
@@ -217,7 +289,7 @@
                 // Add marker to map
                 const marker = L.marker(place.coords)
                     .addTo(map)
-                    .bindPopup(`<div><strong>${place.name}</strong><br>${place.description}</div>`);
+                    .bindPopup(`<div><strong>${place.name}</strong><br>${place.description}<br><button onclick="getDirections(${place.coords[0]}, ${place.coords[1]})" class="mt-2 px-2 py-1 bg-blue-500 text-white rounded">Get Directions</button></div>`);
 
                 markers.push(marker);
 
@@ -232,7 +304,10 @@
                         </div>
                         <span class="inline-flex rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-700">${place.rating}</span>
                     </div>
-                    <p class="mt-3 text-sm text-slate-500">${place.type}</p>
+                    <div class="mt-3 flex gap-2">
+                        <button class="rounded-lg bg-blue-500 px-3 py-1 text-xs text-white hover:bg-blue-600" onclick="getDirections(${place.coords[0]}, ${place.coords[1]})">Get Directions</button>
+                        <p class="text-sm text-slate-500">${place.type}</p>
+                    </div>
                 `;
 
                 card.addEventListener('click', () => {
@@ -250,20 +325,44 @@
             }
         }
 
+        function getDirections(lat, lng) {
+            if (!userLocation) {
+                alert('Please allow location access to get directions.');
+                return;
+            }
+
+            // Remove existing routing control
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            // Add routing control
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(userLocation[0], userLocation[1]),
+                    L.latLng(lat, lng)
+                ],
+                routeWhileDragging: true,
+                createMarker: function() { return null; } // Don't create default markers
+            }).addTo(map);
+        }
+
         // Initialize map when page loads
         document.addEventListener('DOMContentLoaded', initMap);
 
         // Search functionality
         document.getElementById('searchBtn').addEventListener('click', () => {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (query.includes('restaurant') || query.includes('food')) {
-                showPlaces('restaurant');
+            if (query.includes('restaurant') || query.includes('food') || query.includes('restaurants')) {
+                showPlaces('restaurants');
             } else if (query.includes('park') || query.includes('waterfall')) {
                 showPlaces('park');
             } else if (query.includes('beach')) {
                 showPlaces('beach');
-            } else if (query.includes('attraction')) {
-                showPlaces('attraction');
+            } else if (query.includes('hill')) {
+                showPlaces('hill');
+            } else if (query.includes('destination')) {
+                showPlaces('restaurant');
             } else {
                 // Default to beach if no match
                 showPlaces('beach');
@@ -280,5 +379,7 @@
     </script>
     <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Routing Machine JavaScript -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 </body>
 </html>
