@@ -11,18 +11,17 @@ class ReviewController extends Controller
     public function store(Request $request, $guideId)
     {
         $guide = Guide::findOrFail($guideId);
+        $user = $request->user();
 
         $request->validate([
-            'user_name' => 'required|string|max:255',
-            'user_email' => 'required|email|max:255',
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
         ]);
 
         Review::create([
             'guide_id' => $guide->id,
-            'user_name' => $request->user_name,
-            'user_email' => $request->user_email,
+            'user_name' => $user->name ?? 'Guest',
+            'user_email' => $user->email,
             'rating' => $request->rating,
             'comment' => $request->comment,
         ]);

@@ -14,11 +14,7 @@
             <h1 class="text-2xl font-extrabold text-blue-600">
                 Travel<span class="text-gray-800">Navigator</span>
             </h1>
-            <nav class="hidden md:flex items-center space-x-8 text-gray-700">
-                <a href="{{ route('home') }}" class="hover:text-blue-600 transition">Home</a>
-                <a href="{{ route('guides.index') }}" class="hover:text-blue-600 transition">Guides</a>
-                <a href="{{ route('destinations.index') }}" class="hover:text-blue-600 transition">Destinations</a>
-            </nav>
+            @include('partials.navbar')
             <a href="{{ route('guides.index') }}" class="px-5 py-2 text-blue-600 bg-white/80 rounded-full shadow-lg hover:bg-white transition">Back</a>
         </div>
     </header>
@@ -77,8 +73,7 @@
 
     <script>
         const guideId = {{ $guide->id }};
-        const guestEmail = new URLSearchParams(window.location.search).get('email') || 'guest@example.com';
-        const guideId_param = new URLSearchParams(window.location.search).get('guide_id') || guideId;
+        const guestEmail = {!! json_encode(auth()->user()->email) !!};
 
         async function loadMessages() {
             try {
@@ -117,8 +112,8 @@
 
             try {
                 await axios.post(`/guides/${guideId}/messages`, {
-                    sender_name: 'Guest',
-                    receiver_name: '{{ $guide->name }}',
+                    sender_name: {!! json_encode(auth()->user()->name ?? 'Guest') !!},
+                    receiver_name: {!! json_encode($guide->name) !!},
                     guest_email: guestEmail,
                     message: message,
                     sender_type: 'user'

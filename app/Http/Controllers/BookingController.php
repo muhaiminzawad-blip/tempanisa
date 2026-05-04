@@ -11,10 +11,9 @@ class BookingController extends Controller
     public function store(Request $request, $guideId)
     {
         $guide = Guide::findOrFail($guideId);
+        $user = $request->user();
 
         $request->validate([
-            'guest_name' => 'required|string|max:255',
-            'guest_email' => 'required|email|max:255',
             'date' => 'nullable|date',
             'notes' => 'nullable|string|max:1000',
         ]);
@@ -22,8 +21,8 @@ class BookingController extends Controller
         Booking::create([
             'guide_id' => $guide->id,
             'destination_id' => $guide->destination_id,
-            'guest_name' => $request->guest_name,
-            'guest_email' => $request->guest_email,
+            'guest_name' => $user->name ?? 'Guest',
+            'guest_email' => $user->email,
             'date' => $request->date,
             'notes' => $request->notes,
             'status' => 'pending',

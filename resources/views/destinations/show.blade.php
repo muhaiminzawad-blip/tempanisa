@@ -20,13 +20,7 @@
                 Travel<span class="text-gray-800">Navigator</span>
             </h1>
 
-            <nav class="hidden md:flex items-center space-x-8 text-gray-700">
-                <a href="{{ route('home') }}">Home</a>
-                <a href="{{ route('destinations.index') }}">Destinations</a>
-                <a href="#guides">Guides</a>
-                <a href="{{ route('blogs.index') }}">Blogs</a>
-                <a href="#contact">Contact</a>
-            </nav>
+            @include('partials.navbar')
 
             <!-- ✅ Only Get Started Button remains -->
             <div class="hidden md:flex space-x-4">

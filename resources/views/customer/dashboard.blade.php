@@ -19,13 +19,7 @@
         </h1>
 
         <!-- NAV LINKS -->
-        <nav class="hidden md:flex items-center space-x-8 text-gray-700">
-            <a href="{{ route('home') }}">Home</a>
-            <a href="{{ route('destinations.index') }}">Destinations</a>
-            <a href="#guides">Guides</a>
-            <a href="{{ route('blogs.index') }}">Blogs</a>
-            <a href="{{ route('home') }}#contact">Contact</a>
-        </nav>
+        @include('partials.navbar')
 
         <!-- USER + LOGOUT -->
         <div class="flex items-center space-x-4">

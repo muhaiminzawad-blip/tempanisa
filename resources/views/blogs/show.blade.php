@@ -21,13 +21,7 @@
                 Travel<span class="text-gray-800">Navigator</span>
             </h1>
 
-            <nav class="hidden md:flex items-center space-x-8 text-gray-700">
-                <a href="{{ route('home') }}">Home</a>
-                <a href="{{ route('destinations.index') }}">Destinations</a>
-                <a href="#">Guides</a>
-                <a href="{{ route('blogs.index') }}">Blogs</a>
-                <a href="#">Contact</a>
-            </nav>
+            @include('partials.navbar')
 
             <div class="hidden md:flex space-x-4">
                 <a href="#" class="px-5 py-2 text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1 hover:scale-105">
